@@ -1,0 +1,2 @@
+import {loadState} from '../core/storage.js';
+export function savedPage(){const s=loadState();return `<div class="page-header"><div><div class="eyebrow">Personal library</div><h1 class="page-title">Saved</h1><p class="page-subtitle">Bookmarks for questions, notes, formulas and topics.</p></div></div><div class="card"><div class="empty">Your saved workspace is ready. Use 🔖 on questions or formulas to keep important items here.</div></div>`}

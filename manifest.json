@@ -1,0 +1,10 @@
+{
+  "name": "JEE by JNR",
+  "short_name": "JEE by JNR",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f6f8fc",
+  "theme_color": "#0b1220",
+  "description": "JEE preparation ecosystem by JNR Corporations",
+  "icons": [{"src":"assets/logo.svg","sizes":"any","type":"image/svg+xml"}]
+}

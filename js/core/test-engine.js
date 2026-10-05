@@ -1,0 +1,13 @@
+import {questions} from '../data/sample-data.js';import {loadState,saveState} from './storage.js';import {toast} from './ui.js';
+let state={items:questions.slice(0,6),index:0,answers:{},review:new Set(),seconds:1800,interval:null};
+export function startTest(render){state={items:questions.slice(0,6),index:0,answers:{},review:new Set(),seconds:1800,interval:null};render();state.interval=setInterval(()=>{state.seconds--;const el=document.querySelector('#timer');if(el)el.textContent=`${String(Math.floor(state.seconds/60)).padStart(2,'0')}:${String(state.seconds%60).padStart(2,'0')}`;if(state.seconds<=0)submitTest(render)},1000)}
+export function current(){return state.items[state.index]}
+export function setAnswer(v){state.answers[state.index]=v;toast('Response saved')}
+export function next(){if(state.index<state.items.length-1){state.index++;return true}return false}
+export function prev(){if(state.index>0){state.index--;return true}return false}
+export function toggleReview(){if(state.review.has(state.index))state.review.delete(state.index);else state.review.add(state.index)}
+export function jump(i){state.index=i}
+export function submitTest(render){clearInterval(state.interval);let score=0;state.items.forEach((q,i)=>{if(state.answers[i]===q.answer)score++});const s=loadState();s.testsAttempted+=1;s.questionsSolved+=Object.keys(state.answers).length;s.accuracy=Math.round(((s.accuracy*4)+((score/state.items.length)*100))/5);s.testHistory=[...s.testHistory.slice(-4),Math.round((score/state.items.length)*100)];saveState(s);render();return {score,total:state.items.length}}
+export function paletteHtml(){return state.items.map((q,i)=>`<button class="${i===state.index?'current ':''}${state.answers[i]!==undefined?'answered ':''}${state.review.has(i)?'review':''}" data-jump="${i}">${i+1}</button>`).join('')}
+export function questionHtml(){const q=current();const options=q.options.length?q.options.map((o,i)=>`<button class="option ${state.answers[state.index]===i?'selected':''}" data-answer="${i}"><b>${String.fromCharCode(65+i)}.</b><span>${o}</span></button>`).join(''):`<div class="field"><label>Your numerical answer</label><input id="numericAnswer" inputmode="decimal" value="${state.answers[state.index]??''}" placeholder="Enter answer"></div>`;return `<h2 class="question-text">${q.text}</h2><div>${options}</div><p class="page-subtitle" style="margin-top:16px">${q.subject} • ${q.chapter} • ${q.difficulty} • ${q.exam}</p>`}
+export function total(){return state.items.length}export function answered(){return Object.keys(state.answers).length}export function answerNumeric(v){state.answers[state.index]=Number(v);}export function currentIndex(){return state.index}
